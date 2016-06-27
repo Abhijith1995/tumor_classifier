@@ -12,30 +12,41 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
+# from sklearn.neural_network import MLPClassifier
 
 h = .02  # step size in the mesh
 
 names = ["Nearest Neighbors",
         "Linear SVM",
         "Decision Tree",
-        "Naive Bayes"
+        "Naive Bayes",
+        "Neural Network"
 ]
 
 classifiers = [
     KNeighborsClassifier(3),
     SVC(kernel="linear", C=0.025),
     DecisionTreeClassifier(max_depth=5),
-    GaussianNB()
+    GaussianNB(),
+    # MLPClassifier(activation='relu', algorithm='l-bfgs', alpha=1e-05,
+    #    batch_size='auto', beta_1=0.9, beta_2=0.999, early_stopping=False,
+    #    epsilon=1e-08, hidden_layer_sizes=(5, 2), learning_rate='constant',
+    #    learning_rate_init=0.001, max_iter=200, momentum=0.9,
+    #    nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
+    #    tol=0.0001, validation_fraction=0.1, verbose=False,
+    #    warm_start=False)
 ]
 columns = ['id','clump_thickness','unif_cell_shape','marg_adhesion','single_epith_cell','bare_nuclei','bland_chromatin','normal_nucleoli','mitoses','class']
 figure = plt.figure(figsize=(27, 9))
 
 df = pd.read_csv('breast-cancer-wisconsin.data.csv')
 df.replace('?', -99999, inplace=True)
-df.drop('id',1,inplace=True)
-df.drop(columns[1:8],1,inplace=True)
-
-X = np.array(df.drop(['class'],1))
+columns_to_drop = [
+    'id',
+]
+df.drop(columns_to_drop,1,inplace=True)
+X = np.array(df[['clump_thickness','unif_cell_shape']])
+print X.shape
 y = np.array(df['class'])
 
 X = StandardScaler().fit_transform(X)
